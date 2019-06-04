@@ -1,9 +1,10 @@
 ## Planned Changes
 
-To make this project working for me I plan to use ovh.com's API and therefore rewrite the given python hook for it.
+To make this project working for me I plan to use ovh.com's api and therefore rewrite the given python hook for it.
+
 Work in progress!
 
-Setup atm:
+Planned Setup atm:
 - Put application details into ovh.conf (https://github.com/ovh/python-ovh#1-create-an-application)
 - request_token.py
 - Put given Consumer Token into ovh.conf
