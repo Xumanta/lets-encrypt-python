@@ -3,6 +3,7 @@
 import requests
 import json
 import logging
+import ovh
 import dns.resolver
 from tldextract import extract
 from f5.bigip import ManagementRoot
@@ -14,13 +15,10 @@ import time
 requests.packages.urllib3.disable_warnings()
 
 # slurp credentials
-with open('config/creds.json', 'r') as f:
+with open('config/f5creds.json', 'r') as f:
     config = json.load(f)
 f.close()
 
-api_host = config['dnshost']
-api_acct = config['dnsacct']
-api_token = config['apitoken']
 f5_host = config['f5host']
 f5_user = config['f5acct']
 f5_password = config['f5pw']
@@ -31,9 +29,11 @@ logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.INFO)
 
 # Name.com Nameservers
-dns_servers = []
-for ns in range(1, 5):
-    dns_servers.append('ns%d.name.com' % ns)
+#dns_servers = []
+#for ns in range(1, 5):
+#    dns_servers.append('ns%d.name.com' % ns)
+#-> ToDo: Replace with request to ovhs api for their DNS Servers
+
 
 # Resolve IPs for nameservers
 resolver = dns.resolver.Resolver()
@@ -65,7 +65,7 @@ def _has_dns_propagated(name, token):
 
 def create_txt_record(args):
     """
-    Create a TXT DNS record via name.com's DNS API
+    Create a TXT DNS record via ovh.com's DNS API
     """
     domain_name, token = args[0], args[2]
     fqdn_tuple = extract(domain_name)
@@ -83,7 +83,7 @@ def create_txt_record(args):
         'ttl': u'300',
         'priority': u'10'
     }
-
+    # ToDo: Rewrite POST Request to OVH and saving it
     b = requests.session()
     b.verify = False
     b.headers.update({u'Content-Type': u'application/json',
