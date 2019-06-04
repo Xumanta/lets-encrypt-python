@@ -1,6 +1,6 @@
 ## Planned Changes
 
-To make this project working for me I plan to use ovh.com's and therefore rewrite the given python hook for it.
+To make this project working for me I plan to use ovh.com's API and therefore rewrite the given python hook for it.
 Work in progress!
 
 ## Synopsis
