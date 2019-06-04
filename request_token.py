@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 import ovh
-import json
 
 # create a client using configuration
 client = ovh.Client()
