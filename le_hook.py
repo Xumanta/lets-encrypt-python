@@ -37,13 +37,13 @@ logger.setLevel(logging.INFO)
 
 # Resolve IPs for nameservers
 resolver = dns.resolver.Resolver()
-namedotcom_dns_servers = [item.address for server in dns_servers
-                          for item in resolver.query(server)]
+ovh_dns_servers = [item.address for server in dns_servers
+                   for item in resolver.query(server)]
 
 
 def _has_dns_propagated(name, token):
     successes = 0
-    for dns_server in namedotcom_dns_servers:
+    for dns_server in ovh_dns_servers:
         resolver.nameservers = [dns_server]
 
         try:
