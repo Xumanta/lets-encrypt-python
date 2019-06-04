@@ -1,3 +1,8 @@
+## Planned Changes
+
+To make this project working for me I plan to use ovh.com's and therefore rewrite the given python hook for it.
+Work in progress!
+
 ## Synopsis
 
 This project uses Lukas2511's letsencrypt.sh shell script as the basis for deploying certificates to an F5 BIG-IP.
