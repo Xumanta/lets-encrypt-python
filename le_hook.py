@@ -82,26 +82,23 @@ def create_txt_record(args):
     else:
         txtrecord = u'_acme-challenge.{0}'.format(fqdn_tuple.subdomain)
     name = "{0}.{1}".format(txtrecord, base_domain_name)
-    record = {
-        'hostname': txtrecord,
-        'type': u'TXT',
-        'content': token,
-        'ttl': u'300',
-        'priority': u'10'
-    }
-    # ToDo: Rewrite POST Request to OVH and saving it
-    b = requests.session()
-    b.verify = False
-    b.headers.update({u'Content-Type': u'application/json',
-                      u'Api-Username': api_acct,
-                      u'Api-Token': api_token})
-    url = u'https://{0}/api/dns/create/{1}'.format(api_host, base_domain_name)
-    create_record = b.post(url, json.dumps(record)).json()
-    logger.info(" + (hook) TXT record created: {0}.{1} => {2}".format(
-        txtrecord,
-        base_domain_name,
-        token))
-    logger.info(" + (hook) Result: {0}".format(create_record['result']))
+
+    ## Creating TXT Record
+    result = client.post(zonebaseurl + 'record',
+                         fieldType='TXT',
+                         subDomain=txtrecord,
+                         target=token,
+                         ttl=0
+                         )
+    # Pretty print
+    logger.info(" + (hook) TXT Created: " + json.dumps(result, indent=4))
+
+    ## Saving Record onto DNS Zone
+    refreshres = client.post(zonebaseurl + 'refresh')
+    # Pretty print
+    print(json.dumps(refreshres, indent=4))
+
+
     logger.info(" + (hook) Settling down for 10s...")
     time.sleep(10)
 
@@ -117,27 +114,21 @@ def delete_txt_record(args):
     domain_name = args[0]
     fqdn_tuple = extract(domain_name)
     base_domain_name = ".".join([fqdn_tuple.domain, fqdn_tuple.suffix])
-
-    b = requests.session()
-    b.verify = False
-    b.headers.update({u'Content-Type': u'application/json',
-                      u'Api-Username': api_acct,
-                      u'Api-Token': api_token})
-    url = u'https://{0}/api/dns/list/{1}'.format(api_host, base_domain_name)
-
-    records = b.get(url).json()
-
-    for record in records['records']:
-        if record['type'] == 'TXT' and u'_acme-challenge' in record['name']:
-            record_id = record['record_id']
-
-    record_payload = {u'record_id': record_id}
-    url = u'https://{0}/api/dns/delete/{1}'.format(api_host, base_domain_name)
-
-    delete_record = b.post(url, json.dumps(record_payload)).json()
-
-    logger.info(" + (hook) TXT record deleted: {0}".format(record_id))
-    logger.info(" + (hook) Result: {0}".format(delete_record['result']))
+    if fqdn_tuple.subdomain is '':
+        txtrecord = u'_acme-challenge'
+    else:
+        txtrecord = u'_acme-challenge.{0}'.format(fqdn_tuple.subdomain)
+    ## Getting all TXT Records
+    restxts = client.get(zonebaseurl + 'record',
+                         fieldType='TXT',
+                         subDomain=txtrecord,
+                         )
+    ## Delete each TXT Record on that subdomain
+    for id in restxts:
+        result = client.delete(zonebaseurl + 'record/' + str(id))
+    ## Saving deletion onto DNS Zone
+    refreshres = client.post(zonebaseurl + 'refresh')
+    logger.info(" + (hook) TXT record deleted!")
 
 
 def deploy_cert(args):
