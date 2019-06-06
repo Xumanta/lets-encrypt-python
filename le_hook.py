@@ -28,15 +28,15 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.INFO)
 
-##OVH Setup
+# OVH Setup
 # create a client using configuration
 client = ovh.Client()
-## Getting Domain Zone
+# Getting Domain Zone
 resultzone = client.get('/domain/zone')
 # Choosing first zone (and in my case the only one)
 zone = resultzone[0]
 zonebaseurl = '/domain/zone/' + zone + '/'
-## Getting DNS Servers for validation
+# Getting DNS Servers for validation
 resultdnservers = client.get('/domain/zone/'+zone)
 dnsserver = resultdnservers['nameServers']
 
@@ -83,7 +83,7 @@ def create_txt_record(args):
         txtrecord = u'_acme-challenge.{0}'.format(fqdn_tuple.subdomain)
     name = "{0}.{1}".format(txtrecord, base_domain_name)
 
-    ## Creating TXT Record
+    # Creating TXT Record
     result = client.post(zonebaseurl + 'record',
                          fieldType='TXT',
                          subDomain=txtrecord,
@@ -93,11 +93,10 @@ def create_txt_record(args):
     # Pretty print
     logger.info(" + (hook) TXT Created: " + json.dumps(result, indent=4))
 
-    ## Saving Record onto DNS Zone
+    # Saving Record onto DNS Zone
     refreshres = client.post(zonebaseurl + 'refresh')
     # Pretty print
     print(json.dumps(refreshres, indent=4))
-
 
     logger.info(" + (hook) Settling down for 10s...")
     time.sleep(10)
@@ -113,21 +112,21 @@ def delete_txt_record(args):
     """
     domain_name = args[0]
     fqdn_tuple = extract(domain_name)
-    base_domain_name = ".".join([fqdn_tuple.domain, fqdn_tuple.suffix])
     if fqdn_tuple.subdomain is '':
         txtrecord = u'_acme-challenge'
     else:
         txtrecord = u'_acme-challenge.{0}'.format(fqdn_tuple.subdomain)
-    ## Getting all TXT Records
+    # Getting all TXT Records
     restxts = client.get(zonebaseurl + 'record',
                          fieldType='TXT',
                          subDomain=txtrecord,
                          )
-    ## Delete each TXT Record on that subdomain
-    for id in restxts:
-        result = client.delete(zonebaseurl + 'record/' + str(id))
-    ## Saving deletion onto DNS Zone
-    refreshres = client.post(zonebaseurl + 'refresh')
+    # delete each TXT Record on that sub-domain
+    for recordid in restxts:
+        result = client.delete(zonebaseurl + 'record/' + str(recordid))
+        logger.info(" + (hook) Deleted Record: %s" % json.dumps(result, indent=4))
+    # Saving deletion onto DNS Zone
+    client.post(zonebaseurl + 'refresh')
     logger.info(" + (hook) TXT record deleted!")
 
 
