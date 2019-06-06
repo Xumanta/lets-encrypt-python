@@ -28,22 +28,28 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.INFO)
 
-# Name.com Nameservers
-#dns_servers = []
-#for ns in range(1, 5):
-#    dns_servers.append('ns%d.name.com' % ns)
-#-> ToDo: Replace with request to ovhs api for their DNS Servers
+##OVH Setup
+# create a client using configuration
+client = ovh.Client()
+## Getting Domain Zone
+resultzone = client.get('/domain/zone')
+# Choosing first zone (and in my case the only one)
+zone = resultzone[0]
+zonebaseurl = '/domain/zone/' + zone + '/'
+## Getting DNS Servers for validation
+resultdnservers = client.get('/domain/zone/'+zone)
+dnsserver = resultdnservers['nameServers']
 
 
 # Resolve IPs for nameservers
 resolver = dns.resolver.Resolver()
-ovh_dns_servers = [item.address for server in dns_servers
-                   for item in resolver.query(server)]
+ovhdns_servers = [item.address for server in dns_servers
+                  for item in resolver.query(server)]
 
 
 def _has_dns_propagated(name, token):
     successes = 0
-    for dns_server in ovh_dns_servers:
+    for dns_server in ovhdns_servers:
         resolver.nameservers = [dns_server]
 
         try:
@@ -56,7 +62,7 @@ def _has_dns_propagated(name, token):
             if text_record == token:
                 successes += 1
 
-    if successes == 4:
+    if successes == 2:
         logger.info(" + (hook) All challenge records found!")
         return True
     else:
