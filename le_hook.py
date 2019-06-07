@@ -136,39 +136,39 @@ def deploy_cert(args):
     cert = args[2]
     chain = args[4]
 
-    mr = ManagementRoot(f5_host, f5_user, f5_password)
+    ffivemr = ManagementRoot(f5_host, f5_user, f5_password)
 
     # Upload files
-    mr.shared.file_transfer.uploads.upload_file(key)
-    mr.shared.file_transfer.uploads.upload_file(cert)
-    mr.shared.file_transfer.uploads.upload_file(chain)
+    ffivemr.shared.file_transfer.uploads.upload_file(key)
+    ffivemr.shared.file_transfer.uploads.upload_file(cert)
+    ffivemr.shared.file_transfer.uploads.upload_file(chain)
 
     # Check to see if these already exist
-    key_status = mr.tm.sys.file.ssl_keys.ssl_key.exists(
+    key_status = ffivemr.tm.sys.file.ssl_keys.ssl_key.exists(
         name='{0}.key'.format(domain))
-    cert_status = mr.tm.sys.file.ssl_certs.ssl_cert.exists(
+    cert_status = ffivemr.tm.sys.file.ssl_certs.ssl_cert.exists(
         name='{0}.crt'.format(domain))
-    chain_status = mr.tm.sys.file.ssl_certs.ssl_cert.exists(name='le-chain.crt')
+    chain_status = ffivemr.tm.sys.file.ssl_certs.ssl_cert.exists(name='le-chain.crt')
 
     if key_status and cert_status and chain_status:
 
         # Because they exist, we will modify them in a transaction
-        tx = mr.tm.transactions.transaction
-        with TransactionContextManager(tx) as api:
+        tx = ffivemr.tm.transactions.transaction
+        with TransactionContextManager(tx) as txapi:
 
-            modkey = api.tm.sys.file.ssl_keys.ssl_key.load(
+            modkey = txapi.tm.sys.file.ssl_keys.ssl_key.load(
                 name='{0}.key'.format(domain))
             modkey.sourcePath = 'file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(key))
             modkey.update()
 
-            modcert = api.tm.sys.file.ssl_certs.ssl_cert.load(
+            modcert = txapi.tm.sys.file.ssl_certs.ssl_cert.load(
                 name='{0}.crt'.format(domain))
             modcert.sourcePath = 'file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(cert))
             modcert.update()
 
-            modchain = api.tm.sys.file.ssl_certs.ssl_cert.load(
+            modchain = txapi.tm.sys.file.ssl_certs.ssl_cert.load(
                 name='le-chain.crt')
             modchain.sourcePath = 'file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(chain))
@@ -178,22 +178,22 @@ def deploy_cert(args):
                 " + (hook) Existing Certificate/Key updated in transaction.")
 
     else:
-        newkey = mr.tm.sys.file.ssl_keys.ssl_key.create(
+        newkey = ffivemr.tm.sys.file.ssl_keys.ssl_key.create(
             name='{0}.key'.format(domain),
             sourcePath='file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(key)))
-        newcert = mr.tm.sys.file.ssl_certs.ssl_cert.create(
+        newcert = ffivemr.tm.sys.file.ssl_certs.ssl_cert.create(
             name='{0}.crt'.format(domain),
             sourcePath='file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(cert)))
-        newchain = mr.tm.sys.file.ssl_certs.ssl_cert.create(
+        newchain = ffivemr.tm.sys.file.ssl_certs.ssl_cert.create(
             name='le-chain.crt',
             sourcePath='file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(chain)))
         logger.info(" + (hook) New Certificate/Key created.")
 
     # Create SSL Profile if necessary
-    if not mr.tm.ltm.profile.client_ssls.client_ssl.exists(
+    if not ffivemr.tm.ltm.profile.client_ssls.client_ssl.exists(
             name='cssl.{0}'.format(domain), partition='Common'):
         cssl_profile = {
             'name': '/Common/cssl.{0}'.format(domain),
@@ -202,7 +202,7 @@ def deploy_cert(args):
             'chain': '/Common/le-chain.crt',
             'defaultsFrom': '/Common/clientssl'
         }
-        mr.tm.ltm.profile.client_ssls.client_ssl.create(**cssl_profile)
+        ffivemr.tm.ltm.profile.client_ssls.client_ssl.create(**cssl_profile)
 
 
 def unchanged_cert(args):
