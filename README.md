@@ -2,6 +2,8 @@
 
 I changed the dns api from name.com's one to ovh - therefore the python hook got the most changes.
 
+Atm I want to add LetsEncrypts WildCard Support, but for this theres more changes needed..
+
 Work in progress!
 
 Setup:
