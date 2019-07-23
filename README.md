@@ -1,14 +1,17 @@
-## Planned Changes
+## Changes
 
-To make this project working for me I plan to use ovh.com's api and therefore rewrite the given python hook for it.
+I changed the dns api from name.com's one to ovh - therefore the python hook got the most changes.
 
 Work in progress!
 
-Planned Setup atm:
+Setup:
 - Put application details into ovh.conf (https://github.com/ovh/python-ovh#1-create-an-application)
-- request_token.py
-- Put given Consumer Token into ovh.conf
+- Fill in the zone name in request_token.py und run it, to get a consumer key
+- Put given consumer key into ovh.conf
 - Usage as mentioned down here
+
+Known issue:
+Script breaks when LE-Chain is already on the F5 when deploying new certs.
 
 ## Synopsis
 
