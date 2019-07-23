@@ -179,10 +179,12 @@ def deploy_cert(args):
             name='{0}.crt'.format(domain),
             sourcePath='file:/var/config/rest/downloads/{0}'.format(
                 os.path.basename(cert)))
-        newchain = ffivemr.tm.sys.file.ssl_certs.ssl_cert.create(
-            name='le-chain.crt',
-            sourcePath='file:/var/config/rest/downloads/{0}'.format(
-                os.path.basename(chain)))
+        if not chain_status:
+            logger.info(" + (hook) No LE-Chain found - deploying now")
+            newchain = ffivemr.tm.sys.file.ssl_certs.ssl_cert.create(
+                name='le-chain.crt',
+                sourcePath='file:/var/config/rest/downloads/{0}'.format(
+                    os.path.basename(chain)))
         logger.info(" + (hook) New Certificate/Key created.")
 
     # Create SSL Profile if necessary
