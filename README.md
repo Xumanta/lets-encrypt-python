@@ -10,9 +10,6 @@ Setup:
 - Put given consumer key into ovh.conf
 - Usage as mentioned down here
 
-Known issue:
-Script breaks when LE-Chain is already on the F5 when deploying new certs.
-
 ## Synopsis
 
 This project uses Lukas2511's letsencrypt.sh shell script as the basis for deploying certificates to an F5 BIG-IP.
