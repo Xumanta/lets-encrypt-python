@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import requests
 import json
@@ -36,20 +36,13 @@ resultzone = client.get('/domain/zone')
 # Choosing first zone (and in my case the only one)
 zone = resultzone[0]
 zonebaseurl = '/domain/zone/' + zone + '/'
-# Getting DNS Servers for validation
-resultdnservers = client.get('/domain/zone/'+zone)
-dnsserver = resultdnservers['nameServers']
-
-
-# Resolve IPs for nameservers
-resolver = dns.resolver.Resolver()
-ovhdns_servers = [item.address for server in dns_servers
-                  for item in resolver.query(server)]
-
 
 def _has_dns_propagated(name, token):
+    dns_servers = ['1.1.1.1','1.0.0.1','8.8.8.8']
+    resolver = dns.resolver.Resolver()
+    btoken =  "b'" + token + "'"
     successes = 0
-    for dns_server in ovhdns_servers:
+    for dns_server in dns_servers:
         resolver.nameservers = [dns_server]
 
         try:
@@ -59,10 +52,10 @@ def _has_dns_propagated(name, token):
 
         text_records = [record.strings[0] for record in dns_response]
         for text_record in text_records:
-            if text_record == token:
+            if str(text_record) == btoken:
                 successes += 1
 
-    if successes == 2:
+    if successes == 3:
         logger.info(" + (hook) All challenge records found!")
         return True
     else:
@@ -124,7 +117,7 @@ def delete_txt_record(args):
     # delete each TXT Record on that sub-domain
     for recordid in restxts:
         result = client.delete(zonebaseurl + 'record/' + str(recordid))
-        logger.info(" + (hook) Deleted Record: %s" % json.dumps(result, indent=4))
+        logger.info(" + (hook) Deleted Record (null): %s" % json.dumps(result, indent=4))
     # Saving deletion onto DNS Zone
     client.post(zonebaseurl + 'refresh')
     logger.info(" + (hook) TXT record deleted!")
