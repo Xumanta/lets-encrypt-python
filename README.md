@@ -2,8 +2,6 @@
 
 I changed the dns api from name.com's one to ovh - therefore the python hook got the most changes.
 
-Work in progress!
-
 Setup:
 - Put application details into ovh.conf (https://github.com/ovh/python-ovh#1-create-an-application)
 - Fill in the zone name in request_token.py und run it, to get a consumer key
