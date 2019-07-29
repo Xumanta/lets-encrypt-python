@@ -196,9 +196,9 @@ def deploy_cert(args):
 
     # Create SSL Profile if necessary
     if not ffivemr.tm.ltm.profile.client_ssls.client_ssl.exists(
-            name='cssl.{0}'.format(domain), partition='Common'):
+            name='cssl.{0}'.format(domain).replace("*", "wildcard"), partition='Common'):
         cssl_profile = {
-            'name': '/Common/cssl.{0}'.format(domain),
+            'name': '/Common/cssl.{0}'.format(domain).replace("*", "wildcard"),
             'cert': '/Common/{0}.crt'.format(domain),
             'key': '/Common/{0}.key'.format(domain),
             'chain': '/Common/le-chain.crt',
