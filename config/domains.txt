@@ -1,2 +1,7 @@
-# example domain
-# domain.com www.domain.com
+#...
+# Using the alias 'service_example_com' create a wildcard certificate for
+# '*.service.example.com' and store it in the directory
+# ${CERTDIR}/service_example_com
+# NOTE: It is NOT a certificate for 'service.example.com'
+#*.service.example.com > service_example_com
+#...
