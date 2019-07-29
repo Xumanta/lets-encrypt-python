@@ -32,7 +32,7 @@ CHALLENGETYPE="dns-01"
 # the defaults found in the main configuration file. Additional config files
 # in this directory needs to be named with a '.sh' ending.
 # default: <unset>
-CONFIG_D="/var/tmp/le/config"
+CONFIG_D="/opt/lead/lets-encrypt-python/config"
 
 # Program or function called in certain situations
 #
@@ -44,7 +44,7 @@ CONFIG_D="/var/tmp/le/config"
 #
 # BASEDIR and WELLKNOWN variables are exported and can be used in an external program
 # default: <unset>
-HOOK=/var/tmp/le/le_hook.py
+HOOK=/opt/lead/lets-encrypt-python/le_hook.py
 
 
 # Base directory for account key, generated certificates and list of domains (default: $SCRIPTDIR -- uses config directory if undefined)
