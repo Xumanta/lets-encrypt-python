@@ -11,6 +11,7 @@ from f5.bigip.contexts import TransactionContextManager
 import os
 import sys
 import time
+import re
 
 requests.packages.urllib3.disable_warnings()
 
