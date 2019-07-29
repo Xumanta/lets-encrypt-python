@@ -2,9 +2,8 @@
 
 I changed the dns api from name.com's one to ovh - therefore the python hook got the most changes.
 
-Atm I want to add LetsEncrypts WildCard Support, but for this theres more changes needed..
-
-Work in progress!
+I also had changed from letsencrypt.sh to dehydrated for support of ACMEv2 and therefore wildcard support.
+This meant some changes on the hook, but thanks to rbeuque74 script I was able to figured it out.
 
 Setup:
 - Put application details into ovh.conf (https://github.com/ovh/python-ovh#1-create-an-application)
