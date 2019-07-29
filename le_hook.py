@@ -203,6 +203,15 @@ def deploy_cert(args):
 def unchanged_cert(args):
     logger.info(" + (hook) No changes necessary. ")
 
+def invalid_challenge(args):
+    domain, response = args[0], args[1]
+    logger.warning("Challenge for domain '%s' was invalid, please have a look: %s", domain, response)
+    return
+
+def request_failure(args):
+    status_code, reason = args[0], args[1]
+    logger.warning("Request to Let's Encrypt failed: %s", reason)
+    return
 
 def main(argv):
     """
