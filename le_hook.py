@@ -216,9 +216,31 @@ def main(argv):
         'clean_challenge': delete_txt_record,
         'deploy_cert': deploy_cert,
         'unchanged_cert': unchanged_cert,
+        'invalid_challenge': invalid_challenge,
+        'request_failure': request_failure,
     }
-    logger.info(" + (hook) executing: {0}".format(argv[0]))
-    ops[argv[0]](argv[1:])
+    
+    # Log level
+    log_level = PATTERN_LOG_LEVEL.findall(argv[0])
+    if log_level:
+        level = log_level[0].lower()
+        if level in ('warn', 'warning'):
+            logger.setLevel(logging.WARNING)
+        elif level == 'info':
+            logger.setLevel(logging.INFO)
+        elif level == 'debug':
+            logger.setLevel(logging.DEBUG)
+        argv.pop(0)
+
+    action = argv[0]
+    args = argv[1:]
+    if action not in ops:
+        return
+
+    ops[action](args)
+    
+    #logger.info(" + (hook) executing: {0}".format(argv[0]))
+    #ops[argv[0]](argv[1:])
 
 
 if __name__ == '__main__':
