@@ -28,6 +28,12 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.INFO)
 
+
+PATTERN_DOMAIN = re.compile(r'^(.*)\.([^\.]+\.[^\.]+)$')
+PATTERN_SUB_DOMAIN = re.compile(r'^(.*)\.([^\.]+)$')
+PATTERN_LOG_LEVEL = re.compile(r'^--level=(\w+)$')
+
+
 # OVH Setup
 # create a client using configuration
 client = ovh.Client()
