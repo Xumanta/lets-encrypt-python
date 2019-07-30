@@ -2,7 +2,7 @@
 
 This project uses Lukas2511's dehydrated shell script as the basis for deploying certificates to an F5 BIG-IP.
 
-For the DNS challenge it uses OVH.com's API for deployment and then utilizes F5's iControl REST interface to upload and configure the certificates into a clientssl profile for SSL offloading capability.
+For the DNS challenge it uses OVH.com's API and then utilizes F5's iControl REST interface to upload and configure the certificates into a clientssl profile for SSL offloading capability.
 
 Thanks to ACMEv2 it is also possible to deploy wildcard certificates. The clientssl profile will have the asterisk replaced with "wildcard" for the given wildcard domain.
 
