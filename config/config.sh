@@ -19,6 +19,8 @@ KEY_ALGO=rsa
 # Path to certificate authority (default: https://acme-v01.api.letsencrypt.org/directory)
 #CA="https://acme-v01.api.letsencrypt.org/directory"
 CA="https://acme-staging.api.letsencrypt.org/directory"
+# !! You Need to Uncomment the line below and comment the above one to go into production and have support for WildCard Domains!!
+#CA="https://acme-v02.api.letsencrypt.org/directory"
 
 # Path to license agreement (default: https://letsencrypt.org/documents/LE-SA-v1.0.1-July-27-2015.pdf)
 #LICENSE="https://letsencrypt.org/documents/LE-SA-v1.0.1-July-27-2015.pdf"
